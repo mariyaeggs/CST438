@@ -1,3 +1,1 @@
-# CST438
-Java Software Engineering course assignments. 
-# CST438
+# CST438_Java
