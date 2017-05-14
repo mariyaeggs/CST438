@@ -11,7 +11,7 @@ import java.util.Scanner;
  * Game contains logic to play hangman game.
  * Includes code to generate new words,
  * process user guess, determine win or lose.
- * @author David
+ * @author Mariya Eggensperger (modified), David Wisenski (professor). 
  * @version 1.0
  */
 public class Game {
