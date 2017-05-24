@@ -137,4 +137,8 @@ public class Game {
             return null; // to keep compiler happy
 	}
     }
+
+    char selectAChar() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

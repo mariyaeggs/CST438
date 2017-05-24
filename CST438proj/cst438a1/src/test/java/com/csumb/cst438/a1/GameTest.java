@@ -46,10 +46,10 @@ public class GameTest {
         int expResult = 1;
         int result = instance.getState();
         assertEquals(expResult, result);
-        instance.playGame('c');
+        instance.playGame(instance.selectAChar());
         result = instance.getState();
         assertEquals(expResult, result);
-        instance.playGame('d');
+        instance.playGame(instance.selectNoChar(true));
         result = instance.getState();
         assertEquals(expResult+1, result);
     }
@@ -73,12 +73,12 @@ public class GameTest {
     public void testGetDisplayWord() {
         System.out.println("getDisplayWord");
         Game instance = new Game();
-        String expResult = "_ _ _ _ _ _ _ _";
+        String expResult = instance.getDisplayWord();
         String result = instance.getDisplayWord();
         assertEquals(expResult, result);
-        instance.playGame('r');
+        instance.playGame(instance.selectAchar()); // Refer to selectAChar method
         result = instance.getDisplayWord();
-        assertEquals("_ _ _ _ _ _ _ r", result);
+        assertEquals(instance.getDisplayWord(), result);
 
     }
 
@@ -90,8 +90,8 @@ public class GameTest {
         System.out.println("startNewGame");
         Game instance = new Game();
         instance.startNewGame();
-        instance.playGame('c');
-        instance.playGame('d');
+        instance.playGame(instance.selectAChar()); // Refer to selectAChar method
+        instance.playGame(instance.selectNoChar()); // Refer to selectNoChar method
         instance.startNewGame();
         int result = instance.getState();
         assertEquals(1,result);
@@ -106,22 +106,22 @@ public class GameTest {
     @org.junit.Test
     public void testPlayGame() {
         System.out.println("playGame");
-        char guess = 'c';
         Game instance = new Game();
+        char guess = instance.selectAChar();
         int expResult = 0;
         int result = instance.playGame(guess);
         assertEquals(expResult, result);
-        result = instance.playGame('d');
+        result = instance.playGame(instance.selectAChar(true));
         assertEquals(2, result);
-        result = instance.playGame('f');
+        result = instance.playGame(instance.selectAChar(false));
         assertEquals(2, result);
-        result = instance.playGame('g');
+        result = instance.playGame(instance.selectAChar(true));
         assertEquals(2, result);
-        result = instance.playGame('h');
+        result = instance.playGame(instance.selectAChar(false));
         assertEquals(2,result);
-        result = instance.playGame('j');
+        result = instance.playGame(instance.selectAChar(true));
         assertEquals(2,result);
-        result = instance.playGame('k');
+        result = instance.playGame(instance.selectAChar(true));
         assertEquals(3,result);
  
         instance.startNewGame();
