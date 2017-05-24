@@ -31,7 +31,7 @@ public class MyHttpServer {
     public static class MyHandler implements HttpHandler {
 
         private Game game = new Game();
-        private String cookie = "0";     // used to keep track of current game 
+        private String cookie = "0";     // used to keep track of current game
 
         /**
          * handle an HTTP request
@@ -39,6 +39,10 @@ public class MyHttpServer {
          * @param t
          * @throws IOException
          */
+        public Game setupAGame() {
+            return game;
+        }
+
         public void handle(HttpExchange t) throws IOException {
             String uri = t.getRequestURI().toString();
             System.out.println("URI=" + uri);
@@ -63,49 +67,38 @@ public class MyHttpServer {
                             + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
                 } else {
                     // continue with current game
-                    System.out.println(checkURI(uri));
-                    if (checkURI(uri)) {
-                        char ch = uri.charAt(uri.length() - 1);  // letter that user has guessed
-                        int result = game.playGame(ch);
-                        switch (result) {
-                            case 0: // good guess, continue game
-                                response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
-                                        + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
-                                        + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + game.getDisplayWord() + "</h2>"
-                                        + "<form action=\"/\" method=\"get\"> "
-                                        + "Guess a character <input type=\"text\" name=\"guess\"><br>"
-                                        + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
-                                break;
-                            case 1: // good guess, win game
-                                response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
-                                        + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
-                                        + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + "</h2>"
-                                        + "<h2>Congratulations you win!</h2>" + "</body></html>";
-                                cookie = "0";
-                                break;
-                            case 2: // bad guess, continue game
-                                response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
-                                        + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
-                                        + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + game.getDisplayWord() + "</h2>"
-                                        + "<form action=\"/\" method=\"get\"> "
-                                        + "Guess a character <input type=\"text\" name=\"guess\"><br>"
-                                        + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
-                                break;
-                            case 3: // bad guess, lost game
-                                response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
-                                        + "<img src=\"" + "h7.gif" + "\">" + "<h2>You lost!  The word is " + game.getWord() + "</h2>"
-                                        + "</body></html>";
-                                cookie = "0";
-                                break;
-                        }
-                    } else {
-                        response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
-                                + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
-                                + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + game.getDisplayWord() + "</h2>"
-                                + "<h2 style=\"font-family:'Lucida Console', monospace; color:red;\">Invalid input try again</h2>"
-                                + "<form action=\"/\" method=\"get\"> "
-                                + "Guess a character <input type=\"text\" name=\"guess\"><br>"
-                                + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
+                    char ch = uri.charAt(uri.length() - 1);  // letter that user has guessed
+                    int result = game.playGame(ch);
+                    switch (result) {
+                        case 0: // good guess, continue game
+                            response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
+                                    + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
+                                    + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + game.getDisplayWord() + "</h2>"
+                                    + "<form action=\"/\" method=\"get\"> "
+                                    + "Guess a character <input type=\"text\" name=\"guess\"><br>"
+                                    + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
+                            break;
+                        case 1: // good guess, win game
+                            response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
+                                    + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
+                                    + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + "</h2>"
+                                    + "<h2>Congratulations you win!</h2>" + "</body></html>";
+                            cookie = "0";
+                            break;
+                        case 2: // bad guess, continue game
+                            response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
+                                    + "<img src=\"" + "h" + game.getState() + ".gif" + "\">"
+                                    + "<h2 style=\"font-family:'Lucida Console', monospace\"> " + game.getDisplayWord() + "</h2>"
+                                    + "<form action=\"/\" method=\"get\"> "
+                                    + "Guess a character <input type=\"text\" name=\"guess\"><br>"
+                                    + "<input type=\"submit\" value=\"Submit\">" + "</form></body></html>";
+                            break;
+                        case 3: // bad guess, lost game
+                            response = "<!DOCTYPE html><html><head><title>MyHttpServer</title></head><body><h2>Hangman</h2>"
+                                    + "<img src=\"" + "h7.gif" + "\">" + "<h2>You lost!  The word is " + game.getWord() + "</h2>"
+                                    + "</body></html>";
+                            cookie = "0";
+                            break;
                     }
 
                 }
@@ -149,22 +142,12 @@ public class MyHttpServer {
         }
 
         /*
-         * generate a random cookie which is a random long integer
+                * generate a random cookie which is a random long integer
          */
         private String generateCookie() {
             return Long.toString(generator.nextLong());
         }
 
-        /*
-         * check for valid uri input
-         */
-        private boolean checkURI(String theURI) {
-            String usrInput = theURI.substring(theURI.indexOf('=') + 1);
-            if (usrInput.isEmpty() || usrInput.length() > 1) {return false;}
-            else {
-                char usrOutput = usrInput.charAt(0);
-                return Character.isLetter(usrOutput);
-            }
-        }
-    }
+    }  // end of static class MyHandler
+
 }
