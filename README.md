@@ -1,1 +1,1 @@
-# CST438_Java
+# Java Hangman
